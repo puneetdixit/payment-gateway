@@ -8,9 +8,12 @@ from fastapi import FastAPI, Request, status, Query
 from fastapi.encoders import jsonable_encoder
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse, Response
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
+from fastapi.templating import Jinja2Templates
 from pydantic import BaseModel
 
-from src.payment import get_transaction_data
+from src.payment import get_transaction_data, get_all_transactions
 
 
 def create_response(data, additional_info=None):
@@ -44,6 +47,17 @@ app = FastAPI(
     openapi_tags=tags_metadata
 )
 
+app.mount("/static", StaticFiles(directory="static"), name="static")
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+templates = Jinja2Templates(directory="templates")
 
 @app.exception_handler(RequestValidationError)
 def validation_exception_handler(request: Request, exc: RequestValidationError):
@@ -61,7 +75,7 @@ def validation_exception_handler(request: Request, exc: RequestValidationError):
         content=jsonable_encoder(err_resp))
 
 
-@app.middleware("http")
+# @app.middleware("http")
 async def log_requests(request: Request, call_next):
     try:
         print("ip address: {}, request path: {}, parameters: {}"
@@ -109,12 +123,13 @@ def create_payment_request(amount: int, card: CardRequestModel,
     return transaction_data
 
 
-@app.get("/transactions")
-def get_transaction_data():
+@app.get("/transactions", include_in_schema=False)
+def get_transactions(request: Request):
     """
     This function is used to get the transaction data
     """
-    pass
+    data = get_all_transactions()
+    return templates.TemplateResponse("transactions.html", {"request": request, "data": data})
 
 
 if __name__ == '__main__':

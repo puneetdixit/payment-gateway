@@ -3,7 +3,7 @@ import random
 
 import settings
 from src.database_manager import Database
-from src.models import Transactions
+from src.models import Transactions, ResponseCodes
 
 database = Database()
 
@@ -67,3 +67,15 @@ def get_transaction_data(amount, currency, txn_id, card, type):
     }
 
     return transaction_data
+
+def get_all_transactions():
+    """
+    This function is used to get all transactions data.
+    :return transactions_data:
+    """
+    try:
+        result = Transactions.select(Transactions.transaction_id, Transactions.amount, Transactions.currency,
+             Transactions.card_type, Transactions.card_number, Transactions.time, Transactions.resp_code, Transactions.txn_status, ResponseCodes.description).join(ResponseCodes).dicts().execute()
+        return [row for row in result]
+    except Exception:
+        return []

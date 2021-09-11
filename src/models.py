@@ -25,7 +25,7 @@ class Transactions(peewee.Model):
     card_type = peewee.CharField()
     card_number = peewee.CharField()
     time = peewee.DateTimeField()
-    resp_code = peewee.IntegerField()
+    resp_code = peewee.ForeignKeyField(ResponseCodes, on_delete='CASCADE')
     txn_status = peewee.CharField(choices=["success", "failure"])
 
     class Meta:

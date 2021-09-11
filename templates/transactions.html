@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transactions</title>
+    <style>
+
+        table {
+          font-family: arial, sans-serif;
+          border-collapse: collapse;
+          width: 80%;
+        }
+        
+        td, th {
+            border: 1px solid #59b5cc;
+            text-align: left;
+            padding: 5px;
+        }
+
+        button {
+            width: 20%;
+            background-color: #4CAF50;
+            color: white;
+            padding: 14px 20px;
+            margin: 15px 0;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+          
+        button :hover {
+            background-color: #45a049;
+        }
+
+        input[type=text], select {
+            width: 20%;
+            padding: 12px 20px;
+            margin: 15px 0;
+            display: inline-block;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+          }
+    </style>
+</head>
+
+<body>
+<center>
+    <Table>
+        <thead>
+        <tr>
+            <th>Txn ID</th>
+            <th>Amount</th>
+            <th>Currency</th>
+            <th>Card Type</th>
+            <th>Card Number</th>
+            <th>Time</th>
+            <th>Txn Status</th>
+            <th>Response Code</th>
+            <th>Description</th>
+        </tr>
+        </thead>
+        <tbody id="employeeTable">
+        {% for txn in data %}
+        <tr>
+            <td>{{txn.transaction_id}}</td>
+            <td>{{txn.amount}}</td>
+            <td>{{txn.currency}}</td>
+            <td>{{txn.card_type}}</td>
+            <td>{{txn.card_number}}</td>
+            <td>{{txn.time}}</td>
+            <td>{{txn.txn_status}}</td>
+            <td>{{txn.resp_code}}</td>
+            <td>{{txn.description}}</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </Table>
+    <br>
+</center>
+</body>
+
+</html>

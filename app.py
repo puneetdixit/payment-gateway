@@ -96,7 +96,7 @@ async def log_requests(request: Request, call_next):
     return None
 
 
-@app.post("/payment_request")
+@app.post("/payment_request", tags=["Initiate payment"])
 def create_payment_request(amount: int, card: CardRequestModel,
                            currency: str = Query("USD", enum=("USD", "EUR", "BTC", "INR")),
                            type: str = Query("CreditCard", enum=("CreditCard", "DebitCard"))):
@@ -107,6 +107,14 @@ def create_payment_request(amount: int, card: CardRequestModel,
                                             card=card, 
                                             type=type)
     return transaction_data
+
+
+@app.get("/transactions")
+def get_transaction_data():
+    """
+    This function is used to get the transaction data
+    """
+    pass
 
 
 if __name__ == '__main__':

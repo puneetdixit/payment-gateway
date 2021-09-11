@@ -13,7 +13,7 @@ def get_random_response_code():
     This function is used to get a random response code from.
     :return:
     """
-    return random.choice(settings.RESPONSE_CODES)
+    return random.choice(list(settings.RESPONSE_CODES.keys()))
 
 
 def initiate_payment(amount, currency, card_type, card_details):
@@ -44,10 +44,14 @@ def get_transaction_data(amount, currency, txn_id, card, type):
     :return transaction_data:
     """
     transaction_time = str(datetime.datetime.now())
-    status, resp_code = initiate_payment(amount, currency, txn_id, card, type)
+    status, resp_code = initiate_payment(amount, currency, card, type)
 
-    Transactions.insert(transaction_id=txn_id, amount=amount, currency=currency, card_type=type, time=transaction_time,
-                        resp_code=resp_code, txn_status="success" if status else "failure").execute()
+    try:
+        Transactions.insert(transaction_id=txn_id, amount=amount, currency=currency, card_type=type, time=transaction_time,
+                            resp_code=resp_code, txn_status="success" if status else "failure", card_number=card.number).execute()
+
+    except Exception:
+        print("Error in inserting data into transaction table")
 
     transaction_data = {
         "amount": amount,

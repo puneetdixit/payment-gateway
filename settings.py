@@ -4,4 +4,13 @@ DB_USERNAME = "root"
 DB_PASSWORD = "Puneet@321"
 DB_NAME = "payment_gateway"
 
-RESPONSE_CODES = [101, 102, 103, 201, 202, 203]
+
+UPDATE_RESPONSE_CODES = True
+
+RESPONSE_CODES = {
+    101: "Payment success 1",
+    102: "Payment success 2",
+    201: "Invalid card number",
+    202: "Insufficient funds",
+    203: "Invalid CVV number"
+}

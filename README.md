@@ -21,8 +21,6 @@ To connect with database change in settings.py file accordingly.
     DB_PASSWORD = "abc@321"
     DB_NAME = "movies_data
 
-    These are my credentials and where my database is hosted.
-
 # APIs
 1. Go to http://127.0.0.1:5000/docs it will return openapi Swagger UI and there is an post request. Just try it out and fill all the required fields and execute command. It will give you response accordingly
 

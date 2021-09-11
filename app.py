@@ -1,4 +1,3 @@
-import json
 import urllib
 import uuid
 from json.decoder import JSONDecodeError
@@ -14,6 +13,7 @@ from fastapi.templating import Jinja2Templates
 from pydantic import BaseModel
 
 from src.payment import get_transaction_data, get_all_transactions
+import settings
 
 
 def create_response(data, additional_info=None):
@@ -37,7 +37,7 @@ class CardRequestModel(BaseModel):
 tags_metadata = [
     {
         "name": "Initiate payment",
-        "description": "These APIs will be used to initiate payment with debit or credit card.",
+        "description": "API will be used to initiate payment with debit or credit card option.",
     }
 ]
 
@@ -75,7 +75,7 @@ def validation_exception_handler(request: Request, exc: RequestValidationError):
         content=jsonable_encoder(err_resp))
 
 
-# @app.middleware("http")
+@app.middleware("http")
 async def log_requests(request: Request, call_next):
     try:
         print("ip address: {}, request path: {}, parameters: {}"
@@ -85,19 +85,19 @@ async def log_requests(request: Request, call_next):
         body = b""
         async for chunk in response.body_iterator:
             body += chunk
-        if request.url.path not in ['/docs', '/openapi.json']:
-            try:
-                print("ip address: {}, request path: {}, parameters: {}, response: \n{}"
-                      .format(request.client.host, request.url.path,
-                              urllib.parse.unquote(request.url.query).replace("+", " "),
-                              json.dumps(json.loads(str(body.decode())), indent=4)))
-            except JSONDecodeError:
-                print("ip address: {}, request path: {}, parameters: {}, response: \n{}"
-                      .format(request.client.host, request.url.path,
-                              urllib.parse.unquote(request.url.query).replace("+", " "),
-                              str(body.decode()), indent=4))
-            except Exception:
-                print("Exception in {} response : ".format(request.url.path))
+        # if request.url.path not in ['/docs', '/openapi.json']:
+        #     try:
+        #         print("ip address: {}, request path: {}, parameters: {}, response: \n{}"
+        #               .format(request.client.host, request.url.path,
+        #                       urllib.parse.unquote(request.url.query).replace("+", " "),
+        #                       json.dumps(json.loads(str(body.decode())), indent=4)))
+        #     except JSONDecodeError:
+        #         print("ip address: {}, request path: {}, parameters: {}, response: \n{}"
+        #               .format(request.client.host, request.url.path,
+        #                       urllib.parse.unquote(request.url.query).replace("+", " "),
+        #                       str(body.decode()), indent=4))
+        #     except Exception:
+        #         print("Exception in {} response : ".format(request.url.path))
 
         return Response(
             content=body,
@@ -109,6 +109,9 @@ async def log_requests(request: Request, call_next):
         print("Exception in ")
     return None
 
+@app.get("/", include_in_schema=False)
+def index():
+    return {"status": "success", "description": "Server is running"}
 
 @app.post("/payment_request", tags=["Initiate payment"])
 def create_payment_request(amount: int, card: CardRequestModel,
@@ -133,4 +136,4 @@ def get_transactions(request: Request):
 
 
 if __name__ == '__main__':
-    uvicorn.run(app, host="0.0.0.0", port=5000)
+    uvicorn.run(app, host="0.0.0.0", port=settings.PORT)

@@ -5,3 +5,6 @@ PyMySQL==1.0.2
 pydantic~=1.8.2
 aiofiles
 jinja2
+gunicorn==19.6.0
+Pygments==2.9.0
+uvloop

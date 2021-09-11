@@ -47,8 +47,10 @@ def get_transaction_data(amount, currency, txn_id, card, type):
     status, resp_code = initiate_payment(amount, currency, card, type)
 
     try:
-        Transactions.insert(transaction_id=txn_id, amount=amount, currency=currency, card_type=type, time=transaction_time,
-                            resp_code=resp_code, txn_status="success" if status else "failure", card_number=card.number).execute()
+        Transactions.insert(transaction_id=txn_id, amount=amount, currency=currency, card_type=type,
+                            time=transaction_time,
+                            resp_code=resp_code, txn_status="success" if status else "failure",
+                            card_number=card.number).execute()
 
     except Exception:
         print("Error in inserting data into transaction table")
@@ -68,6 +70,7 @@ def get_transaction_data(amount, currency, txn_id, card, type):
 
     return transaction_data
 
+
 def get_all_transactions():
     """
     This function is used to get all transactions data.
@@ -75,7 +78,10 @@ def get_all_transactions():
     """
     try:
         result = Transactions.select(Transactions.transaction_id, Transactions.amount, Transactions.currency,
-             Transactions.card_type, Transactions.card_number, Transactions.time, Transactions.resp_code, Transactions.txn_status, ResponseCodes.description).join(ResponseCodes).dicts().execute()
+                                     Transactions.card_type, Transactions.card_number, Transactions.time,
+                                     Transactions.resp_code, Transactions.txn_status, ResponseCodes.description).join(
+            ResponseCodes).dicts().execute()
         return [row for row in result]
     except Exception:
+        print("Error in getting all data")
         return []
